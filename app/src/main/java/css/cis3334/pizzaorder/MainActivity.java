@@ -7,6 +7,7 @@ import android.widget.CheckBox;
 import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.Spinner;
 
 public class MainActivity extends AppCompatActivity implements updateViewInterface {
 
@@ -18,6 +19,10 @@ public class MainActivity extends AppCompatActivity implements updateViewInterfa
     TextView txtTotal;
     TextView txtStatus;
     PizzaOrderInterface pizzaOrderSystem;
+    boolean cheese;
+    Spinner spinner;
+    String strsize;
+    String topping;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +40,8 @@ public class MainActivity extends AppCompatActivity implements updateViewInterfa
         txtStatus = (TextView) findViewById(R.id.textViewStatus);
 
         pizzaOrderSystem = new PizzaOrder(this);
+
+        spinner = (Spinner) findViewById(R.id.spinner);
     }
 
     @Override
@@ -43,9 +50,24 @@ public class MainActivity extends AppCompatActivity implements updateViewInterfa
     }
 
     public void onClickOrder(View view) {
-        String orderDescription = pizzaOrderSystem.OrderPizza("Pepperoni","Large", false);
+        if (chkbxCheese.isChecked()) {
+            cheese = true;
+        }
+        if (rbSmall.isChecked()){
+            strsize = "Small";
+        }
+        else if (rbMedium.isChecked()) {
+            strsize = "Medium";
+        }
+        else {
+            strsize = "Large";
+        }
+
+        topping = spinner.getSelectedItem().toString();
+
+        String orderDescription = pizzaOrderSystem.OrderPizza(topping, strsize, cheese);
         //display a pop up message for a long period of time
-        Toast.makeText(getApplicationContext(), "You have ordered a "+orderDescription , Toast.LENGTH_LONG).show();
-        txtTotal.setText("Total Due: " + pizzaOrderSystem.getTotalBill().toString());
+        Toast.makeText(getApplicationContext(), "You have ordered a "+ orderDescription , Toast.LENGTH_LONG).show();
+        txtTotal.setText("Total Due: $" + pizzaOrderSystem.getTotalBill().toString());
     }
 }
